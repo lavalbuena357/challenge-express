@@ -268,21 +268,21 @@ describe('server', () => {
                 expect(res.text).to.be.equal('the client does not exist')
             })
         })
-        xit('responds with a status 400 (bad request) and a string message, if the client does not have a appointment for this date', ()=>{
+        it('responds with a status 400 (bad request) and a string message, if the client does not have a appointment for this date', ()=>{
             return agent.get('/api/Appointments/javier?date=23/10/2020%2014:00&option=attend')
             .expect(400)
             .expect((res) => {
                 expect(res.text).to.be.equal('the client does not have a appointment for that date')
             })
         })
-        xit('responds with a status 400 (bad request) and a string message, if the option is not attend, expire or cancel', ()=>{
+        it('responds with a status 400 (bad request) and a string message, if the option is not attend, expire or cancel', ()=>{
             return agent.get('/api/Appointments/javier?date=22/10/2020%2014:00&option=wrongOption')
             .expect(400)
             .expect((res) => {
                 expect(res.text).to.be.equal('the option must be attend, expire or cancel')
             })
         })
-        xit('attend a appointment if the option passed by query is `attend`', ()=>{
+        it('attend a appointment if the option passed by query is `attend`', ()=>{
             return agent.get('/api/Appointments/javier?date=22/10/2020%2014:00&option=attend')
             .expect(200)
             .expect((res) => {
@@ -290,7 +290,7 @@ describe('server', () => {
                 .to.be.deep.equal({ date: '22/10/2020 14:00', status: 'attended' })
             })
         })
-        xit('expire a appointment if the option passed by query is `expire`', ()=>{
+        it('expire a appointment if the option passed by query is `expire`', ()=>{
             return agent.get('/api/Appointments/javier?date=22/10/2020%2016:00&option=expire')
             .expect(200)
             .expect((res) => {
@@ -298,7 +298,7 @@ describe('server', () => {
                 .to.be.deep.equal({ date: '22/10/2020 16:00', status: 'expired' })
             })
         })
-        xit('cancel a appointment if the option passed by query is `cancel`', ()=>{
+        it('cancel a appointment if the option passed by query is `cancel`', ()=>{
             return agent.get('/api/Appointments/javier?date=22/10/2020%2014:00&option=cancel')
             .expect(200)
             .expect((res) => {
@@ -306,7 +306,7 @@ describe('server', () => {
                 .to.be.deep.equal({ date: '22/10/2020 14:00', status: 'cancelled' })
             })
         })
-        xit('respods the modified appointment', ()=>{
+        it('respods the modified appointment', ()=>{
             return agent.get('/api/Appointments/javier?date=22/10/2020%2014:00&option=cancel')
             .expect(200)
             .expect((res) => {
@@ -317,7 +317,7 @@ describe('server', () => {
 
     
     describe('GET /api/Appointments/:name/erase', function(){
-        xit('responds with a status 400 (bad request) and a string message, if the client does not exist', ()=>{
+        it('responds with a status 400 (bad request) and a string message, if the client does not exist', ()=>{
             return agent.get('/api/Appointments/pepe/erase?date=22/10/2020%2014:00')
             .expect(400)
             .expect((res) => {

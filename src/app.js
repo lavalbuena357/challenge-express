@@ -78,19 +78,70 @@ server.get('/api', (req,res) => {
 
 server.post('/api/Appointments', (req,res) => {
     if(!req.body.client) {
-        res.status(400).send('the body must have a client property')
-    } else if(typeof req.body.client !== 'string') {
-        res.status(400).send('client must be a string')
-    } else {
-        model.addAppointment(req.body.client, req.body.appointment)
-        let appointmentD = model.clients[req.body.client].find(el => {
-            return el.date === req.body.appointment.date
-        })
-        res.send(appointmentD)
+        return res.status(400).send('the body must have a client property')
+    } 
+    
+    if(typeof req.body.client !== 'string') {
+        return res.status(400).send('client must be a string')
+    } 
+    
+    model.addAppointment(req.body.client, req.body.appointment)
+    let appointmentD = model.clients[req.body.client].find(el => {
+        return el.date === req.body.appointment.date
+    })
+    res.send(appointmentD)
+})
+
+server.get('/api/Appointments/:name', (req, res) => {
+    let client = req.params.name
+    let date = decodeURI(req.query.date)
+    let state = req.query.option
+
+    if(!model.getClients().includes(client)) {
+        return res.status(400).send('the client does not exist')
+    }
+    
+    if(!model.clients[client].find(el => el.date === date)) {
+        return res.status(400).send('the client does not have a appointment for that date')
+    } 
+
+    if(state !== 'attend' && state !== 'expire' && state !== 'cancel') {
+        return res.status(400).send('the option must be attend, expire or cancel')
+    }
+
+    if(state === 'attend') {
+        model.attend(client, date)
+        let clientApp = model.getAppointments(client)
+        let appointmentAtt = clientApp.find(el => el.date === date)
+        return res.send(appointmentAtt)
+    }
+
+    if(state === 'expire') {
+        model.expire(client, date)
+        let clientApp = model.getAppointments(client)
+        let appointmentAtt = clientApp.find(el => el.date === date)
+        return res.send(appointmentAtt)
+    }
+
+    if(state === 'cancel') {
+        model.cancel(client, date)
+        let clientApp = model.getAppointments(client)
+        let appointmentAtt = clientApp.find(el => el.date === date)
+        return res.send(appointmentAtt)
     }
 })
 
+server.get('/api/Appointments/:name/erase', (req,res) => {
+    let client = req.params.name
+    let date = decodeURI(req.query.date)
+    let state = req.query.option
 
+    if(!model.getClients().includes(client)) {
+        return res.status(400).send('the client does not exist')
+    }
+
+    
+})
 
 server.listen(3003);
 module.exports = { model, server };
