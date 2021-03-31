@@ -2,6 +2,9 @@ var express = require("express");
 var server = express();
 var bodyParser = require("body-parser");
 
+
+//MODEL
+
 var model = {
     clients: {},
 };
@@ -65,8 +68,30 @@ model.getClients = function() {
     return Object.keys(model.clients)
 }
 
+//SERVER
 
 server.use(bodyParser.json());
 
+server.get('/api', (req,res) => {
+    res.send(model.clients)
+})
+
+server.post('/api/Appointments', (req,res) => {
+    if(!req.body.client) {
+        res.status(400).send('the body must have a client property')
+    } else if(typeof req.body.client !== 'string') {
+        res.status(400).send('client must be a string')
+    } else {
+        model.addAppointment(req.body.client, req.body.appointment)
+        let appointmentD = model.clients[req.body.client].find(el => {
+            return el.date === req.body.appointment.date
+        })
+        res.send(appointmentD)
+    }
+})
+
+
+
 server.listen(3003);
 module.exports = { model, server };
+
